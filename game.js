@@ -226,7 +226,7 @@ function castSkill(s) {
   if (p.cd[s.key] > 0) return;
   if (p.mp < s.mp) { text(cx(p), p.y - 10, 'NO MP', '#555'); return; }
   const lvl = p.skillLv[s.id] || 1, lvm = 1 + 0.12 * (lvl - 1);
-  p.mp -= s.mp; p.cd[s.key] = s.cd * 60 * (1 - Math.min(0.55, 0.04 * p.stats.cdr + p.g.cdr + 0.03 * (lvl - 1))) + (s.dur || 0); p.atkT = 14;
+  p.mp -= s.mp; p.cd[s.key] = s.cd * 60 * (1 - Math.min(0.55, 0.04 * p.stats.cdr + p.g.cdr + 0.03 * (lvl - 1))) + (s.dur || 0); (p.cdm = p.cdm || {})[s.key] = p.cd[s.key]; (p.cdd = p.cdd || {})[s.key] = s.dur || 0; p.atkT = 14;
   if (s.tier === 5 && !S.cut) { SAVE.ults++; S.cut = { t: 0, dur: 60, fire: 48, s, lvm }; p.inv = Math.max(p.inv, 130); sfx('ult'); return; } // 궁극기 컷신
   sfx(s.snd); curSrc = 'skill'; curLvm = lvm; curIco = s.ico; curFx = FXMAP[s.ico] || 'arcane'; castFx(s.ico, false); s.fn();
   S.skillBanner = { en: s.en, name: s.name, t: 0 };
@@ -244,7 +244,7 @@ function updP() {
   if (p.hurtT > 0) p.hurtT--;
   if (p.atkT > 0) p.atkT--;
   const tick = p.haste > 0 ? 2 : 1;
-  for (const k in p.cd) if (p.cd[k] > 0) p.cd[k] -= tick;
+  for (const k in p.cd) if (p.cd[k] > 0) { const inDur = p.cdd && p.cdd[k] > 0 && p.cd[k] > p.cdm[k] - p.cdd[k]; p.cd[k] -= inDur ? 1 : tick; } // 지속시간 동안은 가속 없이 흐르고, 쿨다운은 그 뒤에 시작
   p.mp = Math.min(p.maxmp, p.mp + p.cls.mpr);
 
   const dir = (keys.ArrowRight ? 1 : 0) - (keys.ArrowLeft ? 1 : 0);

@@ -114,7 +114,7 @@ function drawHUD() {
   items.forEach((s, i) => {
     const big = i === 0, w = big ? bs : ss, h = big ? bs : ss;
     const x = big ? sx0 : sx0 + bs + 20 + (i - 1) * (ss + gap), y = big ? sy0 - 4 : sy0;
-    const locked = !!s.empty, cdv = Math.max(0, P.cd[s.key] || 0), cdm = s.key === 'J' ? s.cd : s.cd * 60 + (s.dur || 0), act = !!s.dur && cdv > cdm - s.dur;
+    const locked = !!s.empty, cdv = Math.max(0, P.cd[s.key] || 0), cdm = s.key === 'J' ? s.cd : Math.max((P.cdm && P.cdm[s.key]) || 0, cdv, 1), act = !!s.dur && cdv > cdm - s.dur;
     const ready = !locked && cdv <= 0 && P.mp >= s.mp;
     if (lastCdv[s.key] > 0 && cdv <= 0 && !locked) readyFlash[s.key] = 12;
     lastCdv[s.key] = cdv; if (readyFlash[s.key] > 0) readyFlash[s.key]--;

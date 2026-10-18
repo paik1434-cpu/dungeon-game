@@ -487,7 +487,7 @@ function update() {
   if (!S.locked && P.x > S.arenaL + 60) { S.locked = true; S.leftBound = S.arenaL; spawnBoss(); }
   for (const e of S.enemies) {
     if (!e.boss && Math.abs(cx(e) - cx(P)) > 1300) continue; // 멀리 있는 적은 잠들어 있다
-    updE(e);
+    updE(e); if (S.lockR < 1e8 && e.x > S.lockL - 120 && e.x < S.lockR + 120) { if (e.x < S.lockL) { e.x = S.lockL; e.vx = Math.max(e.vx, 0); } else if (e.x + e.w > S.lockR) { e.x = S.lockR - e.w; e.vx = Math.min(e.vx, 0); } }
     if (e.y > H + 40) e.dead = true; // 구덩이에 빠짐
   }
   S.enemies = S.enemies.filter(e => !e.dead);

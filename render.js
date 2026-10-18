@@ -213,7 +213,7 @@ function logic() {
   else if (state === 'archive') archiveLogic();
   else {
     let handled = false;
-    if (state === 'pause') pauseVolLogic();
+    if (state === 'pause') { pauseVolLogic(); if (pressed.KeyR) { sfx('confirm'); startStage(stageIdx); state = 'play'; } else if (pressed.Escape) { sfx('confirm'); state = 'title'; TT.page = 'main'; musicSet(0); } }
     if (pressed.Enter && state === 'play' && S.nearInter && !S.nearMerch && !S.cut) { interact(S.nearInter); pressed.Enter = false; }
     const wantMenu = pressed.Tab || (pressed.Enter && state === 'play' && S.nearMerch);
     if (wantMenu && !(S && S.cut) && (state === 'play' || state === 'dead' || state === 'clear' || state === 'map')) { menuPrev = state; state = 'menu'; menuOpen(pressed.Tab ? 0 : 3); sfx('ui'); handled = true; }
@@ -242,7 +242,7 @@ function render() {
   drawBG(); drawWorld(); ctx.restore(); drawFrost(); drawImpactFrame();
   drawHUD(); if (S && S.cut) drawCut();
   if (state === 'menu') drawMenu();
-  else if (state === 'pause') { bandPanel('PAUSE', 'P 를 눌러 계속 · ↑↓ ←→ 로 음량 조절', 'PAUSED'); drawVolPanel(300, 394, 360, VSEL); }
+  else if (state === 'pause') { bandPanel('PAUSE', 'P 계속 · R 던전 재시작 · Esc 타이틀로 · ↑↓ ←→ 음량', 'PAUSED'); drawVolPanel(300, 394, 360, VSEL); }
   else if (state === 'dead') drawDead();
   else if (state === 'clear') {
     const last = stageIdx >= DUNGEONS.length - 1;
